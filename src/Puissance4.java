@@ -1,45 +1,69 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.MessageFormat;
 import java.util.*;
 
 class Puissance4 extends Exception {
    public static boolean inputNotNull = true;
    public static int choixJoueur;
+   public static boolean finDePartie = false;
+   public static int compteurJoueur1; // on teste si gagnant à partir du 4ème coup
+   public static int compteurJoeur2; // on teste si gagnent à partir du 4ème coup
+    private int x;
+    private int y;
+    static int numcolonne;
+    static int numligne;
+    static int noJoueur;
 
-    public static int getChoixJoueur() {
-        return choixJoueur;
+    public static int getNumcolonne() {return numcolonne;}
+
+    public static void setNumcolonne(int numcolonne) {
+        Puissance4.numcolonne = numcolonne; }
+
+    public static int getNumligne() { return numligne;}
+
+    public static void setNumligne(int numligne) {
+        Puissance4.numligne = numligne;
     }
 
+    public static int getNoJoueur() { return noJoueur;}
+
+    public static void setNoJoueur(int noJoueur) {
+        Puissance4.noJoueur = noJoueur;
+    }
+
+    // Ghetters et Setters
+   public static int getChoixJoueur() { return choixJoueur; }
     public static void setChoixJoueur(int choixJoueur) {
         Puissance4.choixJoueur = choixJoueur;
     }
-
-    public static boolean isInputNotNull() {
-        return inputNotNull;
-    }
-
+    public static boolean isInputNotNull() { return inputNotNull; }
     public static void setInputNotNull(boolean inputNotNull) {
-        Puissance4.inputNotNull = inputNotNull;
+        Puissance4.inputNotNull = inputNotNull; }
+    public static void setFinDePartie(boolean finDePartie) {
+       Puissance4.finDePartie = finDePartie; }
+    public static boolean isFinDePartie() { return finDePartie; }
+    public static int getCompteurJoueur1() { return compteurJoueur1; }
+    public static void setCompteurJoueur1(int compteurJoueur1) {
+       Puissance4.compteurJoueur1 = compteurJoueur1; }
+
+    public static int getCompteurJoeur2() {
+        return compteurJoeur2;
     }
-    // fonction fournie
-    // pour affichage d'un plateau de Puissance 4 où 0 <=> case vide, 1 <=> jeton du joueur1, 2 <=> jeton du joueur2
-    // Pas de vérification si le tableau en paramètre est bien une matrice (i.e. même nombre de colonnes pour chaque ligne)
 
+    public static void setCompteurJoeur2(int compteurJoeur2) {
+        Puissance4.compteurJoeur2 = compteurJoeur2;
+    }
 
-    // fonction fournie
-    // pour effacer le contenu de la Console
     static void effacerConsole() {
-        //System.out.println(); // pour limiter un décalage possible d'affichage
-        System.out.print("\n\033[H\033[2J"); // effacer la Console dans Repl.it
+        System.out.print("\033[H\033[2J"); // effacer la Console dans Repl.it
     }
+
     public static void choix() throws ColonneException {
          /*
          Etape 2 : connaître la colonne choisie par le joueur à compléter
         On inclut dans un bloc try les instructions qui risquent de déclencher une éventuelle
         exception.
          */
+        Puissance4.setInputNotNull(true);
         while (inputNotNull) {
             try {
                 Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
@@ -54,61 +78,90 @@ class Puissance4 extends Exception {
             }Puissance4.setInputNotNull(false);
         }
     }
+    public static void finDePartie(){
+       if (getCompteurJoueur1() ==21|| getCompteurJoeur2() == 21)
+           System.out.println("Fin de partie\nPlateau rempli\nPartie nulle");
+    }
 
     // Le Jeu À COMPLETER
     static void jeuPuissance4() throws ColonneException {
+        // Variables
+        setFinDePartie(false);
+
+
         // Etape initiale : créer le plateau puis l'afficher
         Plateau plateau = new Plateau(new int[6][7]);
         Plateau.afficherPlateau(plateau.getMatrice());
-        boolean finPartie = false;
-
         // Déroulement du Jeu :
-        int noJoueur = 0;
+        setCompteurJoueur1(0);
+        setCompteurJoeur2(0);
+        setNumcolonne(0);
+        setNumligne(5);
+        setNoJoueur(0);
+        int nbUn = 0;
+        int nbDeux = 0;
+        int compteur =0;
         do {
-             // numéro du joueur (sera soit 1, soit 2)
+            // numéro du joueur (sera soit 1, soit 2)
             // Etape 1 : à qui le tour ?
-            noJoueur = (noJoueur % 2) + 1;
+            setNoJoueur(noJoueur % 2 + 1);
             System.out.print("C'est au tour du joueur ");
             System.out.println(noJoueur);
             // Etape 2 : connaître la colonne choisie par le joueur
-            Puissance4.setInputNotNull(true);
             Puissance4.choix();
-            int numcolonne = 0;
-            int numligne = 5;
-            numcolonne = Puissance4.getChoixJoueur()-1;
+            numcolonne = Puissance4.getChoixJoueur() - 1;
 
             // Etape 3 : positionner le jeton
 
             while (plateau.matrice[numligne][numcolonne] != 0)
-            if(numligne== 0){
-                System.out.println("Colonne pleine, faites un autre choix: ");
-                Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
-                numcolonne = Puissance4.getChoixJoueur()-1;
-                numligne = 5;
-            } else numligne --;
-            if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0 ){
+                if (numligne == 0) {
+                    System.out.println("Colonne pleine, faites un autre choix: ");
+                    Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
+                    numcolonne = Puissance4.getChoixJoueur() - 1;
+                    numligne = 5;
+                } else numligne--;
+            if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0) {
                 plateau.matrice[numligne][numcolonne] = 1;
+                effacerConsole();
                 Plateau.afficherPlateau(plateau.getMatrice());
+                setCompteurJoueur1(compteurJoueur1 + 1);
+                finDePartie();
             }
             if (noJoueur == 2 && plateau.matrice[numligne][numcolonne] == 0) {
                 plateau.matrice[numligne][numcolonne] = 2;
+                effacerConsole();
                 Plateau.afficherPlateau(plateau.getMatrice());
+                setCompteurJoeur2(compteurJoeur2 + 1);
+                finDePartie();
             }
-            // Etape 4 : mettre à jour la variable finPartie
-            // à compléter
-            int max=0;
-            int x = numligne;
-            int y = numcolonne;
-
+            if (numligne<5 && numligne>0 && plateau.matrice[numligne][numcolonne]!=0){
+                    for (int y = numligne; y < 5 ; y++) {
+                        System.out.println(y);
+                            if (plateau.matrice[y][numcolonne] == plateau.matrice[y+1][numcolonne] && plateau.matrice[numligne][numcolonne] ==1) {
+                               nbUn ++;
+                                System.out.println(nbUn);
+                            }
+                            if (nbUn == 4) {
+                                System.out.println("Partie Terminée\nJoueur1 gagne");
+                                setFinDePartie(true);
+                            }
+                        if (plateau.matrice[y][numcolonne] == plateau.matrice[y+1][numcolonne] && plateau.matrice[numligne][numcolonne] ==2) {
+                            nbDeux ++;
+                            System.out.println(nbDeux);
+                        }
+                        if (nbDeux == 4) {
+                            System.out.println("Partie Terminée\nJoeur2 gagne");
+                            setFinDePartie(true);
+                        }
+                        }
+                }
+                    System.out.println("Joueur1 : " +getCompteurJoueur1() + " coups\n" + "joueur2 : " +getCompteurJoeur2() + " coups\n");
+            }
+            while (!isFinDePartie()) ;
         }
-        while( ! finPartie );
-        // Etape finale : afficher la victoire/défaite ou partie nulle
-        // à compléter
 
-    }
     public static void main(String args[]) throws IOException, ColonneException {
-        jeuPuissance4();  // ne pas décommenter bêtement, mais compléter cette fonction avant
-        //Puissance4.afficherPlateau(new int[6][10]); // Pour test affichage après modification de la méthode
+        jeuPuissance4();
     }
 
 }

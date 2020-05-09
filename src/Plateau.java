@@ -40,5 +40,7 @@ public class Plateau {
         } else problemeParametre = true;
         if (problemeParametre) System.out.print("Problème d'affiche car paramètre non valide.");
         System.out.println();
+
     }
+
 }
