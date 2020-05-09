@@ -4,61 +4,29 @@ import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.*;
 
-class Puissance4 extends Exception{
+class Puissance4 extends Exception {
+   public static boolean inputNotNull = true;
+   public static int choixJoueur;
 
-    public static void main(String args[]) throws IOException {
-       // test(); // à commenter une fois les tests terminés et valides
-        jeuPuissance4();  // ne pas décommenter bêtement, mais compléter cette fonction avant
-        //Puissance4.afficherPlateau(new int[6][10]); // Pour test affichage après modification de la méthode
+    public static int getChoixJoueur() {
+        return choixJoueur;
     }
 
-    // pour tester et valider les différentes fonctions créées
-    static void test() {
-        int[][] uneMatrice = new int[3][5]; // matrice 3 lignes x 5 colonnes d'entiers (init. à 0 avec Java)
-        uneMatrice[0][0] = 1; // modif de l'élément « en haut à gauche »
-        uneMatrice[2][4] = 2; // modif de l'élément « en bas à droite »
-        afficherPlateau(uneMatrice);
+    public static void setChoixJoueur(int choixJoueur) {
+        Puissance4.choixJoueur = choixJoueur;
     }
 
+    public static boolean isInputNotNull() {
+        return inputNotNull;
+    }
 
+    public static void setInputNotNull(boolean inputNotNull) {
+        Puissance4.inputNotNull = inputNotNull;
+    }
     // fonction fournie
     // pour affichage d'un plateau de Puissance 4 où 0 <=> case vide, 1 <=> jeton du joueur1, 2 <=> jeton du joueur2
     // Pas de vérification si le tableau en paramètre est bien une matrice (i.e. même nombre de colonnes pour chaque ligne)
-    static void afficherPlateau(int[][] matrice) {
-        effacerConsole(); // peut-être commenté. fonction définie ci-dessous
-        boolean problemeParametre = false;
-        if( matrice != null ) {
-            // afficher le contenu
-                for(int iLigne = 0 ; iLigne < matrice.length && ! problemeParametre ; iLigne++ ) {
-                    if( matrice[iLigne] != null ) {
-                        for(int iColonne = 0 ; iColonne < matrice[iLigne].length ; iColonne++ ) {
-                            System.out.print("| ");
-                            if (matrice[iLigne][iColonne] == 0) {
-                                System.out.print(" ");
-                            } else if (matrice[iLigne][iColonne] == 1) {
-                                System.out.print("x");
-                            } else if (matrice[iLigne][iColonne] == 2) {
-                                System.out.print("o");
-                            } else {
-                                System.out.print("?");
-                            }
-                            System.out.print(" ");
-                        }
-                        System.out.println("|");
-                    }
-                    else problemeParametre = true;
-                }
-            // afficher la numérotation des colonnes (en commençant par 1)
-            if( ! problemeParametre ) for (int iColonne = 0; iColonne < matrice[0].length; iColonne++) {
-                System.out.print("  ");
-                System.out.print(iColonne + 1);
-                if (iColonne < iColonne+2) System.out.print(" ");
-            }
-        }
-        else problemeParametre = true;
-        if( problemeParametre ) System.out.print("Problème d'affiche car paramètre non valide.");
-        System.out.println();
-    }
+
 
     // fonction fournie
     // pour effacer le contenu de la Console
@@ -66,75 +34,124 @@ class Puissance4 extends Exception{
         //System.out.println(); // pour limiter un décalage possible d'affichage
         System.out.print("\n\033[H\033[2J"); // effacer la Console dans Repl.it
     }
-
-
-    // Le Jeu
-    // À COMPLETER
-    static void jeuPuissance4() throws IOException {
-        // Etape initiale : créer le plateau puis l'afficher
-        int[][] plateau = new int[6][7]; // à modifier
-        afficherPlateau(plateau);
-
-        // Déroulement du Jeu :
-
-        int noJoueur = 0;  // numéro du joueur (sera soit 1, soit 2)
-        boolean finPartie = false;
-        // Etape 1 : à qui le tour ?
-        noJoueur = (noJoueur % 2) + 1;
-        System.out.print("C'est au tour du joueur ");
-        System.out.println(noJoueur);
-
-        // Etape 2 : connaître la colonne choisie par le joueur
-
-        System.out.println("Choisir une colonne entre 1 et 7");
-        boolean inputNotNull = true;
-        Scanner entree = new Scanner(System.in);
-        int choixJoueur;
+    public static void choix() throws ColonneException {
+         /*
+         Etape 2 : connaître la colonne choisie par le joueur à compléter
+        On inclut dans un bloc try les instructions qui risquent de déclencher une éventuelle
+        exception.
+         */
         while (inputNotNull) {
             try {
-                choixJoueur = entree.nextInt();
-                System.out.printf("Choix colonne : %d%n", choixJoueur);
-                if (choixJoueur <= 7) {
-                    inputNotNull = false;
-                } else System.out.println("Nombre entier inférieur ou égal à 7");
+                Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
             } catch (InputMismatchException e) {
                 System.err.println("Mauvais entrée!\nSeulement un entier entre 1 et 7\n Réessayer :");
-                choixJoueur = new Scanner(System.in).nextInt();
-            }finally {
-                inputNotNull = false;
+                Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
             }
+            System.out.println(Puissance4.getChoixJoueur());
+            if (Puissance4.getChoixJoueur() > 7) throw new ColonneException();
+            else {
+                System.out.printf("Choix colonne : %d%n", Puissance4.getChoixJoueur());
+            }Puissance4.setInputNotNull(false);
         }
+    }
 
-        int numcolonne = 0;
-        int numligne = 5;
-        int casse = 0;
+    // Le Jeu À COMPLETER
+    static void jeuPuissance4() throws ColonneException {
+        // Etape initiale : créer le plateau puis l'afficher
+        Plateau plateau = new Plateau(new int[6][7]);
+        Plateau.afficherPlateau(plateau.getMatrice());
+        boolean finPartie = false;
 
-        // Etape 3 : positionner le jeton
-// à compléter
-
-        // Etape 4 : mettre à jour la variable finPartie
-// à compléter
-
-      //  while (!finPartie) {
+        // Déroulement du Jeu :
+        int noJoueur = 0;
+        do {
+             // numéro du joueur (sera soit 1, soit 2)
             // Etape 1 : à qui le tour ?
             noJoueur = (noJoueur % 2) + 1;
             System.out.print("C'est au tour du joueur ");
             System.out.println(noJoueur);
-
             // Etape 2 : connaître la colonne choisie par le joueur
-            // à compléter
+            Puissance4.setInputNotNull(true);
+            Puissance4.choix();
+            int numcolonne = 0;
+            int numligne = 5;
+            int casse = 0;
+            int somme = -1;
+            int gagnant =0;
+            if(plateau.matrice[0][numcolonne] != 0) {
+                System.out.println("Colonne pleine, choisissez une autre colonne");
+                Puissance4.choix();
+            }
+            numcolonne = Puissance4.getChoixJoueur()-1;
+            System.out.println(numcolonne);
 
             // Etape 3 : positionner le jeton
-            // à compléter
+            //for (  ligne = 0; ligne < plateau.length; ligne ++){
+            while (plateau.matrice[numligne][numcolonne] != 0)
+            {
+                numligne--;
+            }
+            if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0 ){
+                plateau.matrice[numligne][numcolonne] = 1;
+                Plateau.afficherPlateau(plateau.getMatrice());
+            }
+            if (noJoueur == 2 && plateau.matrice[numligne][numcolonne] == 0) {
+                plateau.matrice[numligne][numcolonne] = 2;
+                Plateau.afficherPlateau(plateau.getMatrice());
+            }
 
             // Etape 4 : mettre à jour la variable finPartie
             // à compléter
+            int max=0;
+            int x = numligne;
+            int y = numcolonne;
+            somme = -1;
+            gagnant =0;
+
+            //-->  diagonale HG-BD
+            //x = numligne; y = nomcolonne; somme=-1;
+            while(y >= 0 && x >= 0 && plateau.matrice[x][y] != 0){ y--; x--; somme++;}
+            //x = numligne; y = nomcolonne;
+            while(y < 7 && x < 6 && plateau.matrice[x][y] != 0){ y++; x++; somme++;}
+            if(somme > max) max= somme;
+
+            //-->  diagonale HD-BG
+            //x = numligne; y = nomcolonne; somme=-1;
+            while(y >= 0 && x < 6 && plateau.matrice[x][y] != 0){ y--; x++; somme++;}
+            //x = numligne; y = nomcolonne;
+            while(y < 7 && x >= 0 && plateau.matrice[x][y] != 0){ y++; x--; somme++;}
+            if(somme > max) max= somme;
+
+            //-->  verticale:
+            //x = numligne; y = nomcolonne; somme=-1;
+            while(y >= 0 && plateau.matrice[x][y] != 0){ y--; somme++;}
+            //y = nomcolonne;
+            while(y < 7 && plateau.matrice[x][y] != 0){ y++; somme++;}
+            if(somme > max) max= somme;
+
+            //-->  horizontale:
+            //x = numligne; y = nomcolonne;
+            somme=-1;
+            while(x >= 0 && plateau.matrice[x][y] != 0){ x--; somme++;}
+            //x = numligne;
+            while(x < 6 && plateau.matrice[x][y]!= 0){ x++; somme++;}
+            if(somme > max) {max= somme;}
+
+
+            if(max >= 4){
+                gagnant = noJoueur;
+                System.out.println(gagnant);
+            }
 
         }
-
+        while( ! finPartie );
         // Etape finale : afficher la victoire/défaite ou partie nulle
         // à compléter
 
     }
+    public static void main(String args[]) throws IOException, ColonneException {
+        jeuPuissance4();  // ne pas décommenter bêtement, mais compléter cette fonction avant
+        //Puissance4.afficherPlateau(new int[6][10]); // Pour test affichage après modification de la méthode
+    }
 
-
+}
