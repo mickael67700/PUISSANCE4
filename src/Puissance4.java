@@ -75,22 +75,17 @@ class Puissance4 extends Exception {
             Puissance4.choix();
             int numcolonne = 0;
             int numligne = 5;
-            int casse = 0;
-            int somme = -1;
-            int gagnant =0;
-            if(plateau.matrice[0][numcolonne] != 0) {
-                System.out.println("Colonne pleine, choisissez une autre colonne");
-                Puissance4.choix();
-            }
             numcolonne = Puissance4.getChoixJoueur()-1;
-            System.out.println(numcolonne);
 
             // Etape 3 : positionner le jeton
-            //for (  ligne = 0; ligne < plateau.length; ligne ++){
+
             while (plateau.matrice[numligne][numcolonne] != 0)
-            {
-                numligne--;
-            }
+            if(numligne== 0){
+                System.out.println("Colonne pleine, faites un autre choix: ");
+                Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
+                numcolonne = Puissance4.getChoixJoueur()-1;
+                numligne = 5;
+            } else numligne --;
             if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0 ){
                 plateau.matrice[numligne][numcolonne] = 1;
                 Plateau.afficherPlateau(plateau.getMatrice());
@@ -99,49 +94,11 @@ class Puissance4 extends Exception {
                 plateau.matrice[numligne][numcolonne] = 2;
                 Plateau.afficherPlateau(plateau.getMatrice());
             }
-
             // Etape 4 : mettre à jour la variable finPartie
             // à compléter
             int max=0;
             int x = numligne;
             int y = numcolonne;
-            somme = -1;
-            gagnant =0;
-
-            //-->  diagonale HG-BD
-            //x = numligne; y = nomcolonne; somme=-1;
-            while(y >= 0 && x >= 0 && plateau.matrice[x][y] != 0){ y--; x--; somme++;}
-            //x = numligne; y = nomcolonne;
-            while(y < 7 && x < 6 && plateau.matrice[x][y] != 0){ y++; x++; somme++;}
-            if(somme > max) max= somme;
-
-            //-->  diagonale HD-BG
-            //x = numligne; y = nomcolonne; somme=-1;
-            while(y >= 0 && x < 6 && plateau.matrice[x][y] != 0){ y--; x++; somme++;}
-            //x = numligne; y = nomcolonne;
-            while(y < 7 && x >= 0 && plateau.matrice[x][y] != 0){ y++; x--; somme++;}
-            if(somme > max) max= somme;
-
-            //-->  verticale:
-            //x = numligne; y = nomcolonne; somme=-1;
-            while(y >= 0 && plateau.matrice[x][y] != 0){ y--; somme++;}
-            //y = nomcolonne;
-            while(y < 7 && plateau.matrice[x][y] != 0){ y++; somme++;}
-            if(somme > max) max= somme;
-
-            //-->  horizontale:
-            //x = numligne; y = nomcolonne;
-            somme=-1;
-            while(x >= 0 && plateau.matrice[x][y] != 0){ x--; somme++;}
-            //x = numligne;
-            while(x < 6 && plateau.matrice[x][y]!= 0){ x++; somme++;}
-            if(somme > max) {max= somme;}
-
-
-            if(max >= 4){
-                gagnant = noJoueur;
-                System.out.println(gagnant);
-            }
 
         }
         while( ! finPartie );
