@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
 import java.util.*;
 
 class Puissance4 extends Exception{
@@ -84,39 +85,37 @@ class Puissance4 extends Exception{
         System.out.println(noJoueur);
 
         // Etape 2 : connaître la colonne choisie par le joueur
-        int entreeJoueur;
-        char ch;
-        BufferedReader br;
-        br =new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Choisir une colonne entre 1 et 7");
-        entreeJoueur = br.read();
-        ch = (char) entreeJoueur; // Cast du int entreeJoueur en type char
-        /*
-        Test des types de ch si ch est une lettre ou un caractère spécial ( 24) ou un espace (12)
-        Si ch retrourne un de ces types, boucle sur entrée joueur que l'on cast à nouveau et que l'on re-teste.
-         */
-        while (Character.isLetter(ch) || Character.getType(ch) == 24 || Character.getType(ch) == 12) {
-            System.out.println("Essayer encore.\nEntrée incorrecte: un nombre entier est obligatoire");
-            entreeJoueur = new BufferedReader(new InputStreamReader(System.in)).read();
-            ch = (char) entreeJoueur;
-        }
-        System.out.println("Vous avez choisi la colonne : " + entreeJoueur);
 
+        System.out.println("Choisir une colonne entre 1 et 7");
+        boolean inputNotNull = true;
+        Scanner entree = new Scanner(System.in);
+        int choixJoueur;
+        while (inputNotNull) {
+            try {
+                choixJoueur = entree.nextInt();
+                System.out.printf("Choix colonne : %d%n", choixJoueur);
+                if (choixJoueur <= 7) {
+                    inputNotNull = false;
+                } else System.out.println("Nombre entier inférieur ou égal à 7");
+            } catch (InputMismatchException e) {
+                System.err.println("Mauvais entrée!\nSeulement un entier entre 1 et 7\n Réessayer :");
+                choixJoueur = new Scanner(System.in).nextInt();
+            }finally {
+                inputNotNull = false;
+            }
+        }
 
         int numcolonne = 0;
         int numligne = 5;
         int casse = 0;
-        while (entreeJoueur > 7) {
-            System.out.println("vous avez choisi une colonne inexistante, choisissez une autre colonne");
-            entreeJoueur = br.read();
-        }
+
         // Etape 3 : positionner le jeton
 // à compléter
 
         // Etape 4 : mettre à jour la variable finPartie
 // à compléter
 
-        while (!finPartie) {
+      //  while (!finPartie) {
             // Etape 1 : à qui le tour ?
             noJoueur = (noJoueur % 2) + 1;
             System.out.print("C'est au tour du joueur ");
@@ -137,5 +136,5 @@ class Puissance4 extends Exception{
         // à compléter
 
     }
-}
+
 
