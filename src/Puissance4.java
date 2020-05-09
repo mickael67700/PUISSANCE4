@@ -98,8 +98,8 @@ class Puissance4 extends Exception {
         setNumcolonne(0);
         setNumligne(5);
         setNoJoueur(0);
-        int nbUn = 0;
-        int nbDeux = 0;
+        int nbUn = 1;
+        int nbDeux = 1;
         int compteur =0;
         do {
             // numéro du joueur (sera soit 1, soit 2)
@@ -134,26 +134,27 @@ class Puissance4 extends Exception {
                 setCompteurJoeur2(compteurJoeur2 + 1);
                 finDePartie();
             }
-            if (numligne<5 && numligne>0 && plateau.matrice[numligne][numcolonne]!=0){
-                    for (int y = numligne; y < 5 ; y++) {
+            if (numligne<=5 && numligne>0 && plateau.matrice[numligne][numcolonne]!=0){
+                    for (int y = numligne; y <= 5-numligne ; y++) {
                         System.out.println(y);
-                            if (plateau.matrice[y][numcolonne] == plateau.matrice[y+1][numcolonne] && plateau.matrice[numligne][numcolonne] ==1) {
-                               nbUn ++;
+                            if (plateau.matrice[y][numcolonne] == plateau.matrice[y][numcolonne] && plateau.matrice[y+1][numcolonne] ==1) {
                                 System.out.println(nbUn);
+                                nbUn ++;
+                                if (nbUn == 4) {
+                                    System.out.println("Partie Terminée\nJoueur1 gagne");
+                                    setFinDePartie(true);
+                                }
                             }
-                            if (nbUn == 4) {
-                                System.out.println("Partie Terminée\nJoueur1 gagne");
-                                setFinDePartie(true);
-                            }
-                        if (plateau.matrice[y][numcolonne] == plateau.matrice[y+1][numcolonne] && plateau.matrice[numligne][numcolonne] ==2) {
+
+                        if (plateau.matrice[y][numcolonne] == plateau.matrice[numligne+y][numcolonne] && plateau.matrice[numligne][numcolonne] ==2) {
                             nbDeux ++;
                             System.out.println(nbDeux);
+                            if (nbDeux == 4) {
+                                System.out.println("Partie Terminée\nJoeur2 gagne");
+                                setFinDePartie(true);
+                            }
                         }
-                        if (nbDeux == 4) {
-                            System.out.println("Partie Terminée\nJoeur2 gagne");
-                            setFinDePartie(true);
-                        }
-                        }
+                    }
                 }
                     System.out.println("Joueur1 : " +getCompteurJoueur1() + " coups\n" + "joueur2 : " +getCompteurJoeur2() + " coups\n");
             }
