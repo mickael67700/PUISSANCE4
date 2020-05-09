@@ -1,5 +1,33 @@
 public class Plateau {
-    int[][] matrice;
+
+    static int[][] matrice;
+    final static int H = 0 ;// horizontalement
+    final static int V = 1 ;// verticalement
+    final static int[] hor=new int[] {1, 0} ;// horizontale
+    final static int[] ver=new int[] {0, 1} ;// verticale
+    final static int[] diagoneUp =new int[] {1, 1} ;// diagonale montante
+    final static int[] diagonaleDown=new int[] {1, -1} ;// diagonale descendante
+    final static int[][] direction =new int[][]{hor, ver,diagoneUp,diagonaleDown} ;
+
+    public static int[] getHor() {
+        return hor;
+    }
+
+    public static int[] getVer() {
+        return ver;
+    }
+
+    public static int[] getDiagoneUp() {
+        return diagoneUp;
+    }
+
+    public static int[] getDiagonaleDown() {
+        return diagonaleDown;
+    }
+
+    public static int[][] getDirection() {
+        return direction;
+    }
 
     public Plateau(int[][] matrice) {
         this.matrice = matrice;
@@ -42,5 +70,66 @@ public class Plateau {
         System.out.println();
 
     }
+    static boolean joueur1EstVainqueur(int numcolonne, int numligne){
+        // Recherche de direction alignant 4
+        int i = 0;
+        while (i <getDirection().length){
+            if (joueur1EstVainqueur(numcolonne,numligne,direction[i]))
+                return true;
+            i++;
+        }
+        return false;
+    }
 
+    private static boolean joueur1EstVainqueur(int numcolonne, int numligne, int[] dir){
+        int prochaineColonne = numcolonne+dir[H];
+        int prochaineLigne = numligne+dir[V];
+        int avancer = 0;
+        while (matrice[prochaineColonne][prochaineLigne] == 1){
+            prochaineColonne += dir[H];
+            prochaineLigne += dir[V];
+            avancer ++;
+        }
+        // Recul
+        prochaineColonne = numcolonne - dir[H];
+        prochaineLigne = numligne - dir[H];
+        int reculer = 0;
+        while (matrice[prochaineColonne][prochaineLigne]==1){
+            prochaineColonne -= dir[H];
+            prochaineLigne -= dir[V];
+            reculer ++;
+        }
+        return reculer+1 +avancer>=4;
+    }
+    static boolean joueur2EstVainqueur(int numcolonne, int numligne){
+        // Recherche de direction alignant 4
+        int i = 0;
+        while (i <getDirection().length){
+            if (joueur2EstVainqueur(numcolonne,numligne,direction[i]))
+                return true;
+            i++;
+        }
+        return false;
+    }
+
+    private static boolean joueur2EstVainqueur(int numcolonne, int numligne, int[] dir){
+        int prochaineColonne = numcolonne+dir[H];
+        int prochaineLigne = numligne+dir[V];
+        int avancer = 0;
+        while (matrice[prochaineColonne][prochaineLigne] == 2){
+            prochaineColonne += dir[H];
+            prochaineLigne += dir[V];
+            avancer ++;
+        }
+        // Recul
+        prochaineColonne = numcolonne - dir[H];
+        prochaineLigne = numligne - dir[H];
+        int reculer = 0;
+        while (matrice[prochaineColonne][prochaineLigne]==1){
+            prochaineColonne -= dir[H];
+            prochaineLigne -= dir[V];
+            reculer ++;
+        }
+        return reculer+1 +avancer>=4;
+    }
 }

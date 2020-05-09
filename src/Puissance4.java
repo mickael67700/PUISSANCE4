@@ -2,17 +2,31 @@ import java.io.IOException;
 import java.util.*;
 
 class Puissance4 extends Exception {
-   public static boolean inputNotNull = true;
-   public static int choixJoueur;
-   public static boolean finDePartie = false;
-   public static int compteurJoueur1; // on teste si gagnant à partir du 4ème coup
-   public static int compteurJoeur2; // on teste si gagnent à partir du 4ème coup
+    private static boolean inputNotNull = true;
+    private static int choixJoueur;
+    private static boolean finDePartie = false;
+    private static int compteurJoueur1; // on teste si gagnant à partir du 4ème coup
+    private static int compteurJoeur2; // on teste si gagnent à partir du 4ème coup
+    final static int largeur = 7;
+    final static int hauteur = 6;
+    private static int[][] matrice;
     private int x;
     private int y;
     static int numcolonne;
     static int numligne;
     static int noJoueur;
 
+
+    public void Plateau(int[][] matrice) {
+        this.matrice = matrice;
+    }
+
+    public int[][] getMatrice() {
+        return matrice;
+    }
+
+    final static int empty= 0; // case vide
+    // Ghetters et Setters
     public static int getNumcolonne() {return numcolonne;}
 
     public static void setNumcolonne(int numcolonne) {
@@ -30,7 +44,6 @@ class Puissance4 extends Exception {
         Puissance4.noJoueur = noJoueur;
     }
 
-    // Ghetters et Setters
    public static int getChoixJoueur() { return choixJoueur; }
     public static void setChoixJoueur(int choixJoueur) {
         Puissance4.choixJoueur = choixJoueur;
@@ -57,6 +70,40 @@ class Puissance4 extends Exception {
         System.out.print("\033[H\033[2J"); // effacer la Console dans Repl.it
     }
 
+
+    static void afficherPlateau(int[][]matrice) {
+        boolean problemeParametre = false;
+        if (matrice != null) {
+            // afficher le contenu
+            for (int iLigne = 0; iLigne < matrice.length && !problemeParametre; iLigne++) {
+                if (matrice[iLigne] != null) {
+                    for (int iColonne = 0; iColonne < matrice[iLigne].length; iColonne++) {
+                        System.out.print("| ");
+                        if (matrice[iLigne][iColonne] == 0) {
+                            System.out.print(" ");
+                        } else if (matrice[iLigne][iColonne] == 1) {
+                            System.out.print("x");
+                        } else if (matrice[iLigne][iColonne] == 2) {
+                            System.out.print("o");
+                        } else {
+                            System.out.print("?");
+                        }
+                        System.out.print(" ");
+                    }
+                    System.out.println("|");
+                } else problemeParametre = true;
+            }
+            // afficher la numérotation des colonnes (en commençant par 1)
+            if (!problemeParametre) for (int iColonne = 0; iColonne < matrice[0].length; iColonne++) {
+                System.out.print("  ");
+                System.out.print(iColonne + 1);
+                if (iColonne < iColonne + 2) System.out.print(" ");
+            }
+        } else problemeParametre = true;
+        if (problemeParametre) System.out.print("Problème d'affiche car paramètre non valide.");
+        System.out.println();
+
+    }
     public static void choix() throws ColonneException {
          /*
          Etape 2 : connaître la colonne choisie par le joueur à compléter
@@ -78,10 +125,17 @@ class Puissance4 extends Exception {
             }Puissance4.setInputNotNull(false);
         }
     }
+
+
     public static void finDePartie(){
        if (getCompteurJoueur1() ==21|| getCompteurJoeur2() == 21)
            System.out.println("Fin de partie\nPlateau rempli\nPartie nulle");
     }
+    boolean estLibre(int numcolonne){
+        return matrice[numcolonne][hauteur] == 0;
+    }
+
+
 
     // Le Jeu À COMPLETER
     static void jeuPuissance4() throws ColonneException {
@@ -113,42 +167,50 @@ class Puissance4 extends Exception {
 
             // Etape 3 : positionner le jeton
 
-            if (plateau.matrice[numligne][numcolonne] != 0) {
+            if (Plateau.matrice[numligne][numcolonne] != 0) {
                 do if (numligne == 0) {
                     System.out.println("Colonne pleine, faites un autre choix: ");
                     Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
                     numcolonne = Puissance4.getChoixJoueur() - 1;
                 } else numligne--;
-                while (plateau.matrice[numligne][numcolonne] != 0);
+                while (Plateau.matrice[numligne][numcolonne] != 0);
             }
             /**
              *  remise à 5 de l'index numLigne à cause de numligne --
              */
             for (int y = 5 ; y > 0 ;y --){
-                if(plateau.matrice[y][numcolonne] ==0){
+                if(Plateau.matrice[y][numcolonne] ==0){
                     setNumligne(y);
                     break;
                 }
             }
-                if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0) {
-                    plateau.matrice[numligne][numcolonne] = 1;
+                if (noJoueur == 1 && Plateau.matrice[numligne][numcolonne] == 0) {
+                    Plateau.matrice[numligne][numcolonne] = 1;
                     effacerConsole();
                     Plateau.afficherPlateau(plateau.getMatrice());
-                    setCompteurJoueur1(compteurJoueur1 + 1);
-                    finDePartie();
+                    setCompteurJoueur1(compteurJoueur1 + 1); //Compte le nombre de coups joués par joueur1
+                    if(Plateau.joueur1EstVainqueur(numligne, numcolonne)){
+                        System.out.println("Joueur 1 gagne");
+                        setFinDePartie(true);
+                    };
+                    finDePartie(); //Vérification si le nombre de coup est = à 21 , la moitié du plateau.
                 }
-                if (noJoueur == 2 && plateau.matrice[numligne][numcolonne] == 0) {
-                    plateau.matrice[numligne][numcolonne] = 2;
+                if (noJoueur == 2 && Plateau.matrice[numligne][numcolonne] == 0) {
+                    Plateau.matrice[numligne][numcolonne] = 2;
                     effacerConsole();
                     Plateau.afficherPlateau(plateau.getMatrice());
-                    setCompteurJoeur2(compteurJoeur2 + 1);
-                    finDePartie();
+                    setCompteurJoeur2(compteurJoeur2 + 1); //Compte le nombre de coups joués par joueur2
+                    if(Plateau.joueur2EstVainqueur(numligne, numcolonne)){
+                        System.out.println("Joueur 2 gagne");
+                        setFinDePartie(true);
+                    };
+                    finDePartie(); // Vérification si le nombre de coup est = à 21 , la moitié du plateau.
                 }
                 System.out.println("numéro de ligne" + numligne);
                 //Vérification verticale
-                if (numligne <= 5 && numligne > 0 && plateau.matrice[numligne][numcolonne] != 0) {
+                if (numligne <= 5 && numligne > 0 && Plateau.matrice[numligne][numcolonne] != 0) {
                     for (int y = numligne; y <= 5; y++) {
-                        if (plateau.matrice[y][numcolonne] == plateau.matrice[y - 1][numcolonne] && plateau.matrice[y][numcolonne] == 1) {
+                        if (Plateau.matrice[y][numcolonne] == Plateau.matrice[y - 1][numcolonne] && Plateau.matrice[y][numcolonne] == 1) {
                             System.out.println("nb1 " + nbUn);
                             nbUn++;
                             if (nbUn == 4) {
@@ -156,7 +218,7 @@ class Puissance4 extends Exception {
                                 setFinDePartie(true);
                             }
                         }
-                        if (plateau.matrice[y][numcolonne] == plateau.matrice[y - 1][numcolonne] && plateau.matrice[y][numcolonne] == 2) {
+                        if (Plateau.matrice[y][numcolonne] == Plateau.matrice[y - 1][numcolonne] && Plateau.matrice[y][numcolonne] == 2) {
                             nbDeux++;
                             System.out.println(nbDeux);
                             if (nbDeux == 4) {
