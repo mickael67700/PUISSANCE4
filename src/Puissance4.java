@@ -98,9 +98,9 @@ class Puissance4 extends Exception {
         setNumcolonne(0);
         setNumligne(5);
         setNoJoueur(0);
-        int nbUn = 1;
-        int nbDeux = 1;
-        int compteur =0;
+        int nbUn = 0; //compteur pour les alignements de 1 pour déterminer si joueur1 gagne
+        int nbDeux = 0;// compteur pour les alignements de 2 pour déterminer si joueur 2 gagne
+        int compteur = 0;
         do {
             // numéro du joueur (sera soit 1, soit 2)
             // Etape 1 : à qui le tour ?
@@ -113,41 +113,51 @@ class Puissance4 extends Exception {
 
             // Etape 3 : positionner le jeton
 
-            while (plateau.matrice[numligne][numcolonne] != 0)
-                if (numligne == 0) {
+            if (plateau.matrice[numligne][numcolonne] != 0) {
+                do if (numligne == 0) {
                     System.out.println("Colonne pleine, faites un autre choix: ");
                     Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
                     numcolonne = Puissance4.getChoixJoueur() - 1;
-                    numligne = 5;
                 } else numligne--;
-            if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0) {
-                plateau.matrice[numligne][numcolonne] = 1;
-                effacerConsole();
-                Plateau.afficherPlateau(plateau.getMatrice());
-                setCompteurJoueur1(compteurJoueur1 + 1);
-                finDePartie();
+                while (plateau.matrice[numligne][numcolonne] != 0);
             }
-            if (noJoueur == 2 && plateau.matrice[numligne][numcolonne] == 0) {
-                plateau.matrice[numligne][numcolonne] = 2;
-                effacerConsole();
-                Plateau.afficherPlateau(plateau.getMatrice());
-                setCompteurJoeur2(compteurJoeur2 + 1);
-                finDePartie();
+            /**
+             *  remise à 5 de l'index numLigne à cause de numligne --
+             */
+            for (int y = 5 ; y > 0 ;y --){
+                if(plateau.matrice[y][numcolonne] ==0){
+                    setNumligne(y);
+                    break;
+                }
             }
-            if (numligne<=5 && numligne>0 && plateau.matrice[numligne][numcolonne]!=0){
-                    for (int y = numligne; y <= 5-numligne ; y++) {
-                        System.out.println(y);
-                            if (plateau.matrice[y][numcolonne] == plateau.matrice[y][numcolonne] && plateau.matrice[y+1][numcolonne] ==1) {
-                                System.out.println(nbUn);
-                                nbUn ++;
-                                if (nbUn == 4) {
-                                    System.out.println("Partie Terminée\nJoueur1 gagne");
-                                    setFinDePartie(true);
-                                }
+                if (noJoueur == 1 && plateau.matrice[numligne][numcolonne] == 0) {
+                    plateau.matrice[numligne][numcolonne] = 1;
+                    effacerConsole();
+                    Plateau.afficherPlateau(plateau.getMatrice());
+                    setCompteurJoueur1(compteurJoueur1 + 1);
+                    finDePartie();
+                }
+                if (noJoueur == 2 && plateau.matrice[numligne][numcolonne] == 0) {
+                    plateau.matrice[numligne][numcolonne] = 2;
+                    effacerConsole();
+                    Plateau.afficherPlateau(plateau.getMatrice());
+                    setCompteurJoeur2(compteurJoeur2 + 1);
+                    finDePartie();
+                }
+                System.out.println("numéro de ligne" + numligne);
+                //Vérification verticale
+                if (numligne <= 5 && numligne > 0 && plateau.matrice[numligne][numcolonne] != 0) {
+                    for (int y = numligne; y <= 5; y++) {
+                        if (plateau.matrice[y][numcolonne] == plateau.matrice[y - 1][numcolonne] && plateau.matrice[y][numcolonne] == 1) {
+                            System.out.println("nb1 " + nbUn);
+                            nbUn++;
+                            if (nbUn == 4) {
+                                System.out.println("Partie Terminée\nJoueur1 gagne");
+                                setFinDePartie(true);
                             }
-
-                        if (plateau.matrice[y][numcolonne] == plateau.matrice[numligne+y][numcolonne] && plateau.matrice[numligne][numcolonne] ==2) {
-                            nbDeux ++;
+                        }
+                        if (plateau.matrice[y][numcolonne] == plateau.matrice[y - 1][numcolonne] && plateau.matrice[y][numcolonne] == 2) {
+                            nbDeux++;
                             System.out.println(nbDeux);
                             if (nbDeux == 4) {
                                 System.out.println("Partie Terminée\nJoeur2 gagne");
@@ -156,10 +166,11 @@ class Puissance4 extends Exception {
                         }
                     }
                 }
-                    System.out.println("Joueur1 : " +getCompteurJoueur1() + " coups\n" + "joueur2 : " +getCompteurJoeur2() + " coups\n");
-            }
-            while (!isFinDePartie()) ;
+            System.out.println("Joueur1 : " + getCompteurJoueur1() + " coups\n" + "joueur2 : " + getCompteurJoeur2() + " coups\n");
         }
+        while (!isFinDePartie());
+    }
+
 
     public static void main(String args[]) throws IOException, ColonneException {
         jeuPuissance4();
