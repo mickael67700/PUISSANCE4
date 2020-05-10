@@ -81,7 +81,7 @@ class Puissance4 extends Exception {
     }
     public static void choix() throws ColonneException {
          /*
-         Etape 2 : connaître la colonne choisie par le joueur à compléter
+         Etape 2 : connaître la colonne choisie par le joueur
         On inclut dans un bloc try les instructions qui risquent de déclencher une éventuelle
         exception.
          */
@@ -90,7 +90,7 @@ class Puissance4 extends Exception {
             try {
                 Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
             } catch (InputMismatchException e) {
-                System.err.println("Mauvais entrée!\nSeulement un entier entre 1 et 7\n Réessayer :");
+                System.err.println("Mauvaise entrée!\nSeulement un entier entre 1 et 7\n Réessayer :");
                 Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
             }
             System.out.println(Puissance4.getChoixJoueur());
@@ -101,6 +101,11 @@ class Puissance4 extends Exception {
         }
     }
 
+    /**
+     * Plateeau de 6*7 = 42 cases,
+     * Chaque joueurs peut jouer 42/2 coups.
+     * Si le compteur = 21 c'est que la partie est nulle si aucun alignement n'est trouvé.
+     */
     public static void finDePartie(){
        if (getCompteurJoueur1() ==21|| getCompteurJoeur2() == 21)
            System.out.println("Fin de partie\nPlateau rempli\nPartie nulle");
@@ -112,7 +117,15 @@ class Puissance4 extends Exception {
         setFinDePartie(false);
 
 
-        // Etape initiale : créer le plateau puis l'afficher
+        /**
+         *  Etape initiale : créer le plateau puis l'afficher.
+         *  Initialisation du tableau avec lignes +2 et colonnes +2 pour permettre la recherche
+         *  d'alignenment sans levée de "index out of bounds". C'est en quelque sorte les limites du plateau
+         *  mais elles ne sont pas sélectionnables par le joueur.
+         *  Les colonnes pour le joueur sélectionnables pour le joueur => 1 à 7
+         *  Les lignes pour le joueur  => 1 à 6
+         */
+
         Plateau plateau = new Plateau(new int[8][9]);
         Plateau.afficherPlateau(plateau.getMatrice());
         // Déroulement du Jeu :
@@ -134,13 +147,16 @@ class Puissance4 extends Exception {
             Puissance4.choix();
             numcolonne = Puissance4.getChoixJoueur() ;
 
-            // Etape 3 : positionner le jeton
-
+            /**
+             *  Etape 3 : positionner le jeton
+             *  Vérification que la colonne n'est pas pleine.
+             *
+              */
             if (Plateau.matrice[numligne][numcolonne] != 0) {
-                do if (numligne == 0) {
+                do if (numligne == 1) {
                     System.out.println("Colonne pleine, faites un autre choix: ");
                     Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
-                    numcolonne = Puissance4.getChoixJoueur() - 1;
+                    numcolonne = Puissance4.getChoixJoueur();
                 } else numligne--;
                 while (Plateau.matrice[numligne][numcolonne] != 0);
             }
@@ -175,8 +191,9 @@ class Puissance4 extends Exception {
                     };
                     finDePartie(); // Vérification si le nombre de coup est = à 21 , la moitié du plateau.
                 }
-                System.out.println("numéro de ligne" + numligne);
-
+                // Pour vérification, peut être suppriméé
+                System.out.println("numéro de ligne : " + getNumligne() + " | numéro de colonne : " +getNumcolonne());
+            // Afiichage compteur nombre de coups des joueurs
             System.out.println("Joueur1 : " + getCompteurJoueur1() + " coups\n" + "joueur2 : " + getCompteurJoeur2() + " coups\n");
         }
         while (!isFinDePartie());
