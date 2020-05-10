@@ -41,9 +41,9 @@ public class Plateau {
         boolean problemeParametre = false;
         if (matrice != null) {
             // afficher le contenu
-            for (int iLigne = 0; iLigne < matrice.length && !problemeParametre; iLigne++) {
+            for (int iLigne = 1; iLigne < matrice.length-1 && !problemeParametre; iLigne++) {
                 if (matrice[iLigne] != null) {
-                    for (int iColonne = 0; iColonne < matrice[iLigne].length; iColonne++) {
+                    for (int iColonne = 1; iColonne < matrice[iLigne].length-1; iColonne++) {
                         System.out.print("| ");
                         if (matrice[iLigne][iColonne] == 0) {
                             System.out.print(" ");
@@ -60,9 +60,9 @@ public class Plateau {
                 } else problemeParametre = true;
             }
             // afficher la numérotation des colonnes (en commençant par 1)
-            if (!problemeParametre) for (int iColonne = 0; iColonne < matrice[0].length; iColonne++) {
+            if (!problemeParametre) for (int iColonne = 1; iColonne < matrice[1].length-1; iColonne++) {
                 System.out.print("  ");
-                System.out.print(iColonne + 1);
+                System.out.print(iColonne );
                 if (iColonne < iColonne + 2) System.out.print(" ");
             }
         } else problemeParametre = true;
@@ -70,22 +70,23 @@ public class Plateau {
         System.out.println();
 
     }
-    static boolean joueur1EstVainqueur(int numcolonne, int numligne){
+
+    static boolean joueurEstVainqueur(int numcolonne, int numligne){
         // Recherche de direction alignant 4
         int i = 0;
         while (i <getDirection().length){
-            if (joueur1EstVainqueur(numcolonne,numligne,direction[i]))
+            if (joueurEstVainqueur(numcolonne,numligne,direction[i]))
                 return true;
             i++;
         }
         return false;
     }
 
-    private static boolean joueur1EstVainqueur(int numcolonne, int numligne, int[] dir){
+    private static boolean joueurEstVainqueur(int numcolonne, int numligne, int[] dir){
         int prochaineColonne = numcolonne+dir[H];
         int prochaineLigne = numligne+dir[V];
         int avancer = 0;
-        while (matrice[prochaineColonne][prochaineLigne] == 1){
+        while (matrice[prochaineColonne][prochaineLigne] == Puissance4.getNoJoueur()){
             prochaineColonne += dir[H];
             prochaineLigne += dir[V];
             avancer ++;
@@ -94,38 +95,7 @@ public class Plateau {
         prochaineColonne = numcolonne - dir[H];
         prochaineLigne = numligne - dir[H];
         int reculer = 0;
-        while (matrice[prochaineColonne][prochaineLigne]==1){
-            prochaineColonne -= dir[H];
-            prochaineLigne -= dir[V];
-            reculer ++;
-        }
-        return reculer+1 +avancer>=4;
-    }
-    static boolean joueur2EstVainqueur(int numcolonne, int numligne){
-        // Recherche de direction alignant 4
-        int i = 0;
-        while (i <getDirection().length){
-            if (joueur2EstVainqueur(numcolonne,numligne,direction[i]))
-                return true;
-            i++;
-        }
-        return false;
-    }
-
-    private static boolean joueur2EstVainqueur(int numcolonne, int numligne, int[] dir){
-        int prochaineColonne = numcolonne+dir[H];
-        int prochaineLigne = numligne+dir[V];
-        int avancer = 0;
-        while (matrice[prochaineColonne][prochaineLigne] == 2){
-            prochaineColonne += dir[H];
-            prochaineLigne += dir[V];
-            avancer ++;
-        }
-        // Recul
-        prochaineColonne = numcolonne - dir[H];
-        prochaineLigne = numligne - dir[H];
-        int reculer = 0;
-        while (matrice[prochaineColonne][prochaineLigne]==1){
+        while (matrice[prochaineColonne][prochaineLigne]==Puissance4.getNoJoueur()){
             prochaineColonne -= dir[H];
             prochaineLigne -= dir[V];
             reculer ++;
