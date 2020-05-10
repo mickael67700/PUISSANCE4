@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+/**
+ * Exception si le choix du joueur est hors du plateau.
+ * Demande un autre choix. InputNotNull booléen de test sur les entrées.
+ */
 public class ColonneException extends Exception {
     public ColonneException(){
         System.out.println("Choix de colonne hors plateau.\n Réessayer");

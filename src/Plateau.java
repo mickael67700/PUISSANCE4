@@ -1,6 +1,5 @@
 public class Plateau {
 
-    static int[][] matrice;
     final static int H = 0 ;// horizontalement
     final static int V = 1 ;// verticalement
     final static int[] hor=new int[] {1, 0} ;// horizontale
@@ -8,6 +7,11 @@ public class Plateau {
     final static int[] diagoneUp =new int[] {1, 1} ;// diagonale montante
     final static int[] diagonaleDown=new int[] {1, -1} ;// diagonale descendante
     final static int[][] direction =new int[][]{hor, ver,diagoneUp,diagonaleDown} ;
+    static int[][] matrice;
+
+    public Plateau(int[][] matrice) {
+        this.matrice = matrice;
+    }
 
     public static int[] getHor() {
         return hor;
@@ -27,14 +31,6 @@ public class Plateau {
 
     public static int[][] getDirection() {
         return direction;
-    }
-
-    public Plateau(int[][] matrice) {
-        this.matrice = matrice;
-    }
-
-    public int[][] getMatrice() {
-        return matrice;
     }
 
     static void afficherPlateau(int[][]matrice) {
@@ -101,5 +97,9 @@ public class Plateau {
             reculer ++;
         }
         return reculer+1 +avancer>=4;
+    }
+
+    public int[][] getMatrice() {
+        return matrice;
     }
 }
