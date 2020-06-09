@@ -33,6 +33,10 @@ public class Plateau {
         return direction;
     }
 
+    public int[][] getMatrice() {
+        return matrice;
+    }
+
     static void afficherPlateau(int[][]matrice) {
         boolean problemeParametre = false;
         if (matrice != null) {
@@ -81,7 +85,7 @@ public class Plateau {
     private static boolean joueurEstVainqueur(int numcolonne, int numligne, int[] dir){
         int prochaineColonne = numcolonne+dir[H];
         int prochaineLigne = numligne+dir[V];
-        int avancer = 0;
+        int avancer = 0; // nombre de cases du joueur vers l'avant 
         while (matrice[prochaineColonne][prochaineLigne] == Puissance4.getNoJoueur()){
             prochaineColonne += dir[H];
             prochaineLigne += dir[V];
@@ -90,7 +94,7 @@ public class Plateau {
         // Recul
         prochaineColonne = numcolonne - dir[H];
         prochaineLigne = numligne - dir[H];
-        int reculer = 0;
+        int reculer = 0;  // nombre de cases du joueur vers l'arrière
         while (matrice[prochaineColonne][prochaineLigne]==Puissance4.getNoJoueur()){
             prochaineColonne -= dir[H];
             prochaineLigne -= dir[V];
@@ -99,7 +103,5 @@ public class Plateau {
         return reculer+1 +avancer>=4;
     }
 
-    public int[][] getMatrice() {
-        return matrice;
-    }
+
 }

@@ -2,12 +2,12 @@ import java.io.IOException;
 import java.util.*;
 
 class Puissance4 extends Exception {
-    final static int largeur = 7;
-    final static int hauteur = 6;
-    final static int empty= 0; // case vide
-    static int numcolonne;
-    static int numligne;
-    static int noJoueur;
+    private final static int largeur = 7;
+    private final static int hauteur = 6;
+    private final static int empty= 0; // case vide
+    private static int numcolonne;
+    private static int numligne;
+    private static int noJoueur;
     private static boolean inputNotNull = true;
     private static int choixJoueur;
     private static boolean finDePartie = false;
@@ -94,7 +94,7 @@ class Puissance4 extends Exception {
                 Puissance4.setChoixJoueur(new Scanner(System.in).nextInt());
             }
             System.out.println(Puissance4.getChoixJoueur());
-            if (Puissance4.getChoixJoueur() > 7) throw new ColonneException();
+            if (Puissance4.getChoixJoueur() > 7 ) throw new ColonneException();
             else {
                 System.out.printf("Choix colonne : %d%n", Puissance4.getChoixJoueur());
             }Puissance4.setInputNotNull(false);
